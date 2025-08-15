@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Analyst</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chat-container::-webkit-scrollbar { width: 4px; }
+        .chat-container::-webkit-scrollbar-thumb { background-color: #4a5568; border-radius: 20px; }
+        .sidebar::-webkit-scrollbar { display: none; }
+        #gallery-modal { background-color: rgba(0,0,0,0.7); }
+        .details-content { max-height: 300px; overflow-y: auto; }
+        .details-content::-webkit-scrollbar { width: 4px; }
+        .details-content::-webkit-scrollbar-thumb { background-color: #4a5568; border-radius: 20px; }
+    </style>
+</head>
+<body class="h-full text-gray-200 font-sans antialiased">
+    <div id="app" class="h-full flex flex-col">
+        <!-- Auth Section -->
+        <div id="auth-section" class="flex items-center justify-center h-full bg-gray-800">
+            <div class="w-full max-w-md p-8 space-y-8 bg-gray-900 rounded-lg shadow-lg">
+                <!-- Login Form -->
+                <div id="login-form">
+                    <h2 class="text-3xl font-bold text-center text-white">Welcome Back</h2>
+                    <p class="text-center text-gray-400">Sign in to continue</p>
+                    <form class="mt-8 space-y-6" onsubmit="app.handleLogin(event)">
+                        <div id="login-error" class="hidden text-red-400 text-sm text-center p-2 bg-red-900/50 rounded"></div>
+                        <input type="email" id="login-email" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Email Address">
+                        <input type="password" id="login-password" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password">
+                        <button type="submit" class="w-full py-3 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Login</button>
+                    </form>
+                    <p class="mt-4 text-center text-gray-400">Don't have an account? <a href="#" onclick="app.showRegisterForm()" class="font-medium text-indigo-400 hover:text-indigo-300">Register</a></p>
+                </div>
+                <!-- Registration Form -->
+                <div id="register-form" class="hidden">
+                    <h2 class="text-3xl font-bold text-center text-white">Create Account</h2>
+                    <p class="text-center text-gray-400">Get started with your AI Data Analyst</p>
+                    <form class="mt-8 space-y-6" onsubmit="app.handleRegister(event)">
+                        <div id="register-error" class="hidden text-red-400 text-sm text-center p-2 bg-red-900/50 rounded"></div>
+                        <input type="email" id="register-email" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Email Address">
+                        <input type="password" id="register-password" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password">
+                        <button type="submit" class="w-full py-3 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Register</button>
+                    </form>
+                    <p class="mt-4 text-center text-gray-400">Already have an account? <a href="#" onclick="app.showLoginForm()" class="font-medium text-indigo-400 hover:text-indigo-300">Login</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="main-app" class="hidden h-full flex">
+            <!-- Sidebar -->
+            <div class="w-1/4 bg-gray-900/70 p-4 flex flex-col sidebar border-r border-gray-800">
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-xl font-bold">Datasets</h1>
+                    <button onclick="app.logout()" class="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 rounded-lg transition-colors">Logout</button>
+                </div>
+                <div class="relative mb-4">
+                     <label for="file-upload" class="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center justify-center transition-colors">
+                        <i class="fas fa-upload mr-2"></i>
+                        <span>Upload Dataset</span>
+                    </label>
+                    <input id="file-upload" type="file" class="hidden" onchange="app.handleFileUpload(event)">
+                </div>
+                <div class="relative mb-4">
+                    <button onclick="app.showGallery()" id="gallery-button" disabled class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-images mr-2"></i>
+                        <span>View Gallery</span>
+                    </button>
+                </div>
+                <div id="dataset-list" class="flex-grow overflow-y-auto space-y-2 pr-2">
+                    <!-- Datasets will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="w-3/4 bg-gray-800 flex flex-col">
+                <!-- Chat Header -->
+                <div id="chat-header" class="p-4 border-b border-gray-700 text-center">
+                    <h2 id="current-dataset-name" class="text-lg font-semibold">Select a dataset to start chatting</h2>
+                </div>
+                
+                <!-- Chart Area -->
+                <div id="chart-area" class="p-4 border-b border-gray-700 hidden">
+                    <canvas id="myChart"></canvas>
+                    <!-- Save to Gallery Form -->
+                    <div id="save-chart-form" class="mt-4 flex items-center space-x-2">
+                        <input id="chart-label-input" type="text" placeholder="Enter a label for this chart..." class="flex-grow px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button onclick="app.handleSaveChart()" class="px-4 py-2 font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Save
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div id="chat-container" class="flex-grow p-4 overflow-y-auto chat-container">
+                     <!-- Messages will be loaded here -->
+                </div>
+                <!-- Input Form -->
+                <div id="chat-form-container" class="p-4 border-t border-gray-700">
+                    <form id="chat-form" onsubmit="app.handleSendMessage(event)" class="flex items-center space-x-4">
+                        <input id="chat-input" type="text" placeholder="Ask a question about your data..." class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" autocomplete="off" disabled>
+                        <button id="send-button" type="submit" class="px-6 py-3 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Modal -->
+        <div id="gallery-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="app.hideGallery()">
+            <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+                <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                    <h2 class="text-xl font-bold">Chart Gallery</h2>
+                    <button onclick="app.hideGallery()" class="text-gray-400 hover:text-white">&times;</button>
+                </div>
+                <div id="gallery-content" class="p-4 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Saved charts will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const app = {
+        state: {
+            token: null,
+            datasets: [],
+            currentDatasetId: null,
+            chatHistory: [],
+            chartInstance: null,
+            currentChartData: null,
+        },
+
+        // --- CORE METHODS ---
+        init() {
+            this.state.token = localStorage.getItem('authToken');
+            if (this.state.token) {
+                this.showMainApp();
+                this.fetchDatasets();
+            } else {
+                this.showAuthSection();
+            }
+        },
+
+        // --- UI TOGGLING ---
+        showAuthSection() {
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+        },
+        showMainApp() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        },
+        showLoginForm() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('register-form').classList.add('hidden');
+        },
+        showRegisterForm() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('register-form').classList.remove('hidden');
+        },
+        
+        // --- AUTHENTICATION ---
+        async handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.classList.add('hidden');
+
+            try {
+                const formData = new FormData();
+                formData.append('username', email);
+                formData.append('password', password);
+
+                const response = await fetch('/api/v1/auth/token', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    let errorMessage = data.detail || 'Login failed';
+                    throw new Error(errorMessage);
+                }
+
+                this.state.token = data.access_token;
+                localStorage.setItem('authToken', this.state.token);
+                this.init();
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            }
+        },
+        async handleRegister(event) {
+            event.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const errorDiv = document.getElementById('register-error');
+            errorDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    let errorMessage = 'Registration failed.';
+                    if (data.detail && Array.isArray(data.detail)) {
+                        errorMessage = data.detail.map(err => `${err.loc[1]}: ${err.msg}`).join(', ');
+                    } else if (data.detail) {
+                        errorMessage = data.detail;
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                alert('Registration successful! Please log in to continue.');
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-password').value = '';
+                this.showLoginForm();
+
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('hidden');
+            }
+        },
+        logout() {
+            this.state.token = null;
+            this.state.datasets = [];
+            this.state.currentDatasetId = null;
+            this.state.chatHistory = [];
+            localStorage.removeItem('authToken');
+            this.init();
+            this.render();
+        },
+
+        // --- DATASET MANAGEMENT ---
+        async fetchDatasets() {
+            if (!this.state.token) return;
+            try {
+                const response = await fetch('/api/v1/datasets/', {
+                    headers: { 'Authorization': `Bearer ${this.state.token}` }
+                });
+                if(response.status === 401) { this.logout(); return; }
+                this.state.datasets = await response.json();
+                this.renderDatasetList();
+            } catch (error) {
+                console.error('Failed to fetch datasets:', error);
+            }
+        },
+        async handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const uploadButton = document.querySelector('label[for="file-upload"]');
+            uploadButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i><span>Uploading...</span>`;
+            uploadButton.classList.add('cursor-not-allowed', 'opacity-75');
+
+            try {
+                const response = await fetch('/api/v1/data/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${this.state.token}` },
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Upload failed');
+                }
+                await this.fetchDatasets();
+            } catch (error) {
+                alert(`Upload Error: ${error.message}`);
+            } finally {
+                uploadButton.innerHTML = `<i class="fas fa-upload mr-2"></i><span>Upload Dataset</span>`;
+                uploadButton.classList.remove('cursor-not-allowed', 'opacity-75');
+                event.target.value = '';
+            }
+        },
+        async selectDataset(datasetId) {
+            this.state.currentDatasetId = datasetId;
+            this.renderDatasetList();
+            
+            document.getElementById('gallery-button').disabled = false;
+            
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+            chatInput.disabled = false;
+            sendButton.disabled = false;
+            
+            const selectedDataset = this.state.datasets.find(d => d.id === datasetId);
+            document.getElementById('current-dataset-name').textContent = selectedDataset.original_filename;
+            
+            document.getElementById('chart-area').classList.add('hidden');
+            if (this.state.chartInstance) {
+                this.state.chartInstance.destroy();
+                this.state.chartInstance = null;
+            }
+            
+            await this.fetchChatHistory(datasetId);
+        },
+
+        // --- CHAT MANAGEMENT ---
+        async fetchChatHistory(datasetId) {
+            if (!this.state.token) return;
+            try {
+                const response = await fetch(`/api/v1/datasets/${datasetId}/history`, {
+                    headers: { 'Authorization': `Bearer ${this.state.token}` }
+                });
+                this.state.chatHistory = await response.json();
+                this.renderChatHistory();
+            } catch (error) {
+                console.error('Failed to fetch chat history:', error);
+            }
+        },
+        async handleSendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message || !this.state.currentDatasetId) return;
+
+            this.state.chatHistory.push({ is_from_user: true, message: message, timestamp: new Date().toISOString() });
+            this.renderChatHistory();
+            input.value = '';
+
+            this.state.chatHistory.push({ is_from_user: false, message: '...', timestamp: new Date().toISOString() });
+            this.renderChatHistory();
+
+            try {
+                const response = await fetch('/api/v1/query/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.state.token}`
+                    },
+                    body: JSON.stringify({
+                        dataset_id: this.state.currentDatasetId,
+                        question: message
+                    })
+                });
+                
+                const responseData = await response.json();
+                if (!response.ok) { 
+                    throw new Error(responseData.detail || 'Failed to get response'); 
+                }
+                
+                let isChart = false;
+                let chartData = null;
+                let answerText = responseData.answer;
+
+                try {
+                    const potentialChartData = JSON.parse(answerText);
+                    if (potentialChartData && potentialChartData.type === 'chart') {
+                        isChart = true;
+                        chartData = potentialChartData;
+                    }
+                } catch (e) {
+                    isChart = false;
+                }
+
+                this.state.chatHistory.pop(); // remove the '...'
+
+                if (isChart) {
+                    this.state.currentChartData = chartData;
+                    this.renderChart(chartData);
+                    const chartMessage = { 
+                        is_from_user: false, 
+                        message: `Here is the chart you asked for: "${chartData.title}"`, 
+                        timestamp: new Date().toISOString(),
+                        sql_query: responseData.sql_query,
+                        data_preview: responseData.data_preview
+                    };
+                    this.state.chatHistory.push(chartMessage);
+                } else {
+                    document.getElementById('chart-area').classList.add('hidden');
+                    this.state.currentChartData = null;
+                    const textMessage = {
+                        is_from_user: false,
+                        message: answerText,
+                        timestamp: new Date().toISOString(),
+                        sql_query: responseData.sql_query,
+                        data_preview: responseData.data_preview
+                    };
+                    this.state.chatHistory.push(textMessage);
+                }
+                this.renderChatHistory();
+
+            } catch (error) {
+                this.state.chatHistory.pop();
+                this.state.chatHistory.push({ is_from_user: false, message: `Error: ${error.message}`, timestamp: new Date().toISOString(), is_error: true });
+                this.renderChatHistory();
+            }
+        },
+
+        // --- GALLERY FUNCTIONS ---
+        async handleSaveChart() {
+            const labelInput = document.getElementById('chart-label-input');
+            const label = labelInput.value.trim();
+            if (!label || !this.state.currentChartData || !this.state.currentDatasetId) {
+                alert('Please provide a label for the chart.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/v1/charts/datasets/${this.state.currentDatasetId}/charts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.state.token}`
+                    },
+                    body: JSON.stringify({
+                        label: label,
+                        chart_data: JSON.stringify(this.state.currentChartData)
+                    })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to save chart');
+                }
+                alert('Chart saved successfully!');
+                labelInput.value = '';
+            } catch (error) {
+                alert(`Error saving chart: ${error.message}`);
+            }
+        },
+        async showGallery() {
+            if (!this.state.currentDatasetId) return;
+            const modal = document.getElementById('gallery-modal');
+            const content = document.getElementById('gallery-content');
+            content.innerHTML = '<p class="text-gray-400">Loading gallery...</p>';
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            try {
+                const response = await fetch(`/api/v1/charts/datasets/${this.state.currentDatasetId}/charts`, {
+                    headers: { 'Authorization': `Bearer ${this.state.token}` }
+                });
+                if (!response.ok) throw new Error('Failed to load gallery');
+                
+                const charts = await response.json();
+                if (charts.length === 0) {
+                    content.innerHTML = '<p class="text-gray-400 col-span-full text-center">No charts saved for this dataset yet.</p>';
+                    return;
+                }
+
+                content.innerHTML = '';
+                charts.forEach(chart => {
+                    const chartData = JSON.parse(chart.chart_data);
+                    const item = document.createElement('div');
+                    item.className = 'bg-gray-700 p-2 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors';
+                    item.innerHTML = `
+                        <canvas id="gallery-chart-${chart.id}"></canvas>
+                        <p class="text-center font-semibold mt-2">${chart.label}</p>
+                    `;
+                    item.onclick = () => {
+                        this.hideGallery();
+                        this.renderChart(chartData);
+                    };
+                    content.appendChild(item);
+
+                    setTimeout(() => {
+                        const ctx = document.getElementById(`gallery-chart-${chart.id}`).getContext('2d');
+                        new Chart(ctx, {
+                            type: chartData.chart_type,
+                            data: chartData.data,
+                            options: { plugins: { legend: { display: false }, title: { display: false } } }
+                        });
+                    }, 0);
+                });
+
+            } catch (error) {
+                content.innerHTML = `<p class="text-red-400">${error.message}</p>`;
+            }
+        },
+        hideGallery() {
+            const modal = document.getElementById('gallery-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        },
+
+        // --- RENDERING ---
+        toggleDetails(element) {
+            const detailsContent = element.nextElementSibling;
+            if (detailsContent.classList.contains('hidden')) {
+                detailsContent.classList.remove('hidden');
+                element.innerHTML = '<i class="fas fa-chevron-up mr-2"></i>Hide Details';
+            } else {
+                detailsContent.classList.add('hidden');
+                element.innerHTML = '<i class="fas fa-chevron-down mr-2"></i>Show Details';
+            }
+        },
+        renderDatasetList() {
+            const listEl = document.getElementById('dataset-list');
+            listEl.innerHTML = '';
+            if (this.state.datasets.length === 0) {
+                listEl.innerHTML = `<p class="text-gray-500 text-center">No datasets uploaded yet.</p>`;
+                return;
+            }
+            this.state.datasets.forEach(dataset => {
+                const isSelected = dataset.id === this.state.currentDatasetId;
+                const itemEl = document.createElement('div');
+                itemEl.className = `p-3 rounded-lg cursor-pointer transition-colors ${isSelected ? 'bg-indigo-600' : 'bg-gray-800 hover:bg-gray-700'}`;
+                itemEl.textContent = dataset.original_filename;
+                itemEl.onclick = () => this.selectDataset(dataset.id);
+                listEl.appendChild(itemEl);
+            });
+        },
+        renderChatHistory() {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = '';
+            this.state.chatHistory.forEach(msg => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex mb-4 ${msg.is_from_user ? 'justify-end' : 'justify-start'}`;
+                
+                const bubbleWrapper = document.createElement('div');
+                bubbleWrapper.className = `max-w-xl`;
+
+                const bubble = document.createElement('div');
+                bubble.className = `p-3 rounded-lg ${msg.is_from_user ? 'bg-indigo-600' : 'bg-gray-700'} ${msg.is_error ? 'bg-red-800' : ''}`;
+                
+                if (msg.message === '...') {
+                    bubble.innerHTML = `<div class="flex items-center space-x-2"><div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse"></div><div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div><div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div></div>`;
+                } else {
+                    bubble.textContent = msg.message;
+                }
+                
+                bubbleWrapper.appendChild(bubble);
+
+                if (!msg.is_from_user && msg.sql_query) {
+                    const detailsButton = document.createElement('button');
+                    detailsButton.className = 'text-xs text-gray-400 mt-2 hover:text-indigo-300 transition-colors';
+                    detailsButton.innerHTML = '<i class="fas fa-chevron-down mr-2"></i>Show Details';
+                    detailsButton.onclick = () => this.toggleDetails(detailsButton);
+                    bubbleWrapper.appendChild(detailsButton);
+
+                    const detailsContent = document.createElement('div');
+                    detailsContent.className = 'hidden mt-2 p-2 bg-gray-800 rounded-lg border border-gray-600 text-xs details-content';
+                    
+                    let tableHtml = 'No data preview available.';
+                    if (msg.data_preview && msg.data_preview.columns && msg.data_preview.data) {
+                        tableHtml = `<table class="w-full text-left"><thead><tr>${msg.data_preview.columns.map(c => `<th class="p-1 border-b border-gray-600">${c}</th>`).join('')}</tr></thead><tbody>`;
+                        tableHtml += msg.data_preview.data.map(row => `<tr>${row.map(cell => `<td class="p-1">${cell === null ? 'NULL' : cell}</td>`).join('')}</tr>`).join('');
+                        tableHtml += '</tbody></table>';
+                    }
+
+                    detailsContent.innerHTML = `
+                        <h4 class="font-bold mb-1">Generated SQL Query:</h4>
+                        <pre class="bg-gray-900 p-2 rounded text-white whitespace-pre-wrap"><code>${msg.sql_query}</code></pre>
+                        <h4 class="font-bold mt-3 mb-1">Data Preview:</h4>
+                        ${tableHtml}
+                    `;
+                    bubbleWrapper.appendChild(detailsContent);
+                }
+
+                wrapper.appendChild(bubbleWrapper);
+                container.appendChild(wrapper);
+            });
+            container.scrollTop = container.scrollHeight;
+        },
+        renderChart(chartData) {
+            const chartArea = document.getElementById('chart-area');
+            const ctx = document.getElementById('myChart').getContext('2d');
+            
+            if (this.state.chartInstance) {
+                this.state.chartInstance.destroy();
+            }
+
+            chartArea.classList.remove('hidden');
+
+            this.state.chartInstance = new Chart(ctx, {
+                type: chartData.chart_type,
+                data: chartData.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: chartData.title,
+                            color: '#E5E7EB',
+                            font: { size: 18 }
+                        },
+                        legend: {
+                           labels: { color: '#D1D5DB' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#9CA3AF' },
+                            grid: { color: '#4B5563' }
+                        },
+                        x: {
+                            ticks: { color: '#9CA3AF' },
+                            grid: { color: '#4B5563' }
+                        }
+                    }
+                }
+            });
+        },
+        render() {
+            this.renderDatasetList();
+            this.renderChatHistory();
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
