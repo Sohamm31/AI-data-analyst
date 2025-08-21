@@ -4,10 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1.api import api_router
 from app.db.database import engine, Base
 
-# Import all your SQLAlchemy models here
 from app.models import user, dataset, chat, saved_chart
 
-# This creates all tables in your database
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(

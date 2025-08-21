@@ -16,10 +16,7 @@ def save_chart_for_dataset(
     db: Session = Depends(get_db),
     current_user: user_model.User = Depends(dependencies.get_current_user)
 ):
-    """
-    Saves a new chart to a dataset's gallery.
-    """
-    # Authorization check: ensure the dataset belongs to the user
+
     dataset = db.query(dataset_model.Dataset).filter(
         dataset_model.Dataset.id == dataset_id,
         dataset_model.Dataset.user_id == current_user.id
@@ -43,10 +40,7 @@ def get_charts_for_dataset(
     db: Session = Depends(get_db),
     current_user: user_model.User = Depends(dependencies.get_current_user)
 ):
-    """
-    Retrieves all saved charts for a specific dataset.
-    """
-    # Authorization check
+
     dataset = db.query(dataset_model.Dataset).filter(
         dataset_model.Dataset.id == dataset_id,
         dataset_model.Dataset.user_id == current_user.id

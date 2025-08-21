@@ -4,7 +4,7 @@ import json
 
 class SavedChartBase(BaseModel):
     label: str
-    chart_data: str # Will be a JSON string
+    chart_data: str 
 
 class SavedChartCreate(SavedChartBase):
     pass

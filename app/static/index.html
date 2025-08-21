@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-900">
+<html lang="en" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,101 +8,202 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .chat-container::-webkit-scrollbar { width: 4px; }
-        .chat-container::-webkit-scrollbar-thumb { background-color: #4a5568; border-radius: 20px; }
-        .sidebar::-webkit-scrollbar { display: none; }
-        #gallery-modal { background-color: rgba(0,0,0,0.7); }
+        .chat-container::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-thumb { background-color: #64748b; border-radius: 3px; }
+        .chat-container::-webkit-scrollbar-track { background-color: #f1f5f9; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background-color: #64748b; border-radius: 3px; }
+        .sidebar::-webkit-scrollbar-track { background-color: #f8fafc; }
+        #gallery-modal { background-color: rgba(0,0,0,0.5); }
         .details-content { max-height: 300px; overflow-y: auto; }
         .details-content::-webkit-scrollbar { width: 4px; }
-        .details-content::-webkit-scrollbar-thumb { background-color: #4a5568; border-radius: 20px; }
+        .details-content::-webkit-scrollbar-thumb { background-color: #64748b; border-radius: 2px; }
     </style>
 </head>
-<body class="h-full text-gray-200 font-sans antialiased">
+<body class="h-full text-slate-800 font-sans antialiased bg-slate-50">
     <div id="app" class="h-full flex flex-col">
-        <!-- Auth Section -->
-        <div id="auth-section" class="flex items-center justify-center h-full bg-gray-800">
-            <div class="w-full max-w-md p-8 space-y-8 bg-gray-900 rounded-lg shadow-lg">
-                <!-- Login Form -->
-                <div id="login-form">
-                    <h2 class="text-3xl font-bold text-center text-white">Welcome Back</h2>
-                    <p class="text-center text-gray-400">Sign in to continue</p>
-                    <form class="mt-8 space-y-6" onsubmit="app.handleLogin(event)">
-                        <div id="login-error" class="hidden text-red-400 text-sm text-center p-2 bg-red-900/50 rounded"></div>
-                        <input type="email" id="login-email" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Email Address">
-                        <input type="password" id="login-password" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password">
-                        <button type="submit" class="w-full py-3 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Login</button>
-                    </form>
-                    <p class="mt-4 text-center text-gray-400">Don't have an account? <a href="#" onclick="app.showRegisterForm()" class="font-medium text-indigo-400 hover:text-indigo-300">Register</a></p>
+
+        <!-- Landing Page Section -->
+        <div id="landing-section" class="flex items-center justify-center min-h-full bg-white">
+            <div class="max-w-4xl mx-auto p-8 text-center">
+                <div class="mb-8">
+                    <i class="fas fa-chart-line text-6xl text-blue-600 mb-6"></i>
+                    <h1 class="text-5xl font-bold text-slate-900 mb-4">AI Data Analyst</h1>
+                    <p class="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+                        Chat with your data using natural language. Upload your datasets and get instant insights without writing any code.
+                    </p>
                 </div>
-                <!-- Registration Form -->
-                <div id="register-form" class="hidden">
-                    <h2 class="text-3xl font-bold text-center text-white">Create Account</h2>
-                    <p class="text-center text-gray-400">Get started with your AI Data Analyst</p>
-                    <form class="mt-8 space-y-6" onsubmit="app.handleRegister(event)">
-                        <div id="register-error" class="hidden text-red-400 text-sm text-center p-2 bg-red-900/50 rounded"></div>
-                        <input type="email" id="register-email" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Email Address">
-                        <input type="password" id="register-password" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password">
-                        <button type="submit" class="w-full py-3 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">Register</button>
-                    </form>
-                    <p class="mt-4 text-center text-gray-400">Already have an account? <a href="#" onclick="app.showLoginForm()" class="font-medium text-indigo-400 hover:text-indigo-300">Login</a></p>
+                
+                <button onclick="app.handleGetStartedClick()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors duration-200">
+                    Get Started
+                </button>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+                    <div class="p-6 border border-slate-200 rounded-lg">
+                        <i class="fas fa-upload text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2 text-slate-900">Easy Upload</h3>
+                        <p class="text-slate-600 text-sm">Upload files with a simple click</p>
+                    </div>
+                    <div class="p-6 border border-slate-200 rounded-lg">
+                        <i class="fas fa-comments text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2 text-slate-900">Natural Language</h3>
+                        <p class="text-slate-600 text-sm">Ask questions in plain English</p>
+                    </div>
+                    <div class="p-6 border border-slate-200 rounded-lg">
+                        <i class="fas fa-chart-line text-3xl text-blue-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2 text-slate-900">Smart Charts</h3>
+                        <p class="text-slate-600 text-sm">Get automatic visualizations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auth Section -->
+        <div id="auth-section" class="hidden flex items-center justify-center min-h-full bg-slate-100">
+            <div class="w-full max-w-md mx-auto">
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-8">
+                    <div id="login-form">
+                        <div class="text-center mb-6">
+                            <h2 class="text-2xl font-bold text-slate-900">Welcome Back</h2>
+                            <p class="text-slate-600 mt-1">Sign in to your account</p>
+                        </div>
+                        
+                        <form class="space-y-4" onsubmit="app.handleLogin(event)">
+                            <div id="login-error" class="hidden text-red-600 text-sm bg-red-50 border border-red-200 rounded-md p-3"></div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                                <input type="email" id="login-email" required 
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                    placeholder="Enter your email">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                                <input type="password" id="login-password" required 
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                    placeholder="Enter your password">
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200">
+                                Sign In
+                            </button>
+                        </form>
+                        
+                        <p class="mt-4 text-center text-sm text-slate-600">
+                            Don't have an account? 
+                            <a href="#" onclick="app.showRegisterForm()" class="text-blue-600 hover:text-blue-700 font-medium">
+                                Create one
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <div id="register-form" class="hidden">
+                        <div class="text-center mb-6">
+                            <h2 class="text-2xl font-bold text-slate-900">Create Account</h2>
+                            <p class="text-slate-600 mt-1">Get started with AI Data Analyst</p>
+                        </div>
+                        
+                        <form class="space-y-4" onsubmit="app.handleRegister(event)">
+                            <div id="register-error" class="hidden text-red-600 text-sm bg-red-50 border border-red-200 rounded-md p-3"></div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                                <input type="email" id="register-email" required 
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                    placeholder="Enter your email">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                                <input type="password" id="register-password" required 
+                                    class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                    placeholder="Create a password">
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200">
+                                Create Account
+                            </button>
+                        </form>
+                        
+                        <p class="mt-4 text-center text-sm text-slate-600">
+                            Already have an account? 
+                            <a href="#" onclick="app.showLoginForm()" class="text-blue-600 hover:text-blue-700 font-medium">
+                                Sign in
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Main App Section -->
-        <div id="main-app" class="hidden h-full flex">
+        <div id="main-app" class="hidden h-full flex flex-col md:flex-row">
             <!-- Sidebar -->
-            <div class="w-1/4 bg-gray-900/70 p-4 flex flex-col sidebar border-r border-gray-800">
-                <div class="flex items-center justify-between mb-4">
-                    <h1 class="text-xl font-bold">Datasets</h1>
-                    <button onclick="app.logout()" class="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 rounded-lg transition-colors">Logout</button>
-                </div>
-                <div class="relative mb-4">
-                     <label for="file-upload" class="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center justify-center transition-colors">
-                        <i class="fas fa-upload mr-2"></i>
-                        <span>Upload Dataset</span>
-                    </label>
-                    <input id="file-upload" type="file" class="hidden" onchange="app.handleFileUpload(event)">
-                </div>
-                <div class="relative mb-4">
-                    <button onclick="app.showGallery()" id="gallery-button" disabled class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i class="fas fa-images mr-2"></i>
-                        <span>View Gallery</span>
+            <div class="w-full md:w-80 bg-white border-r border-slate-200 p-4 flex flex-col sidebar">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-database text-xl text-blue-600 mr-2"></i>
+                        <h1 class="text-lg font-semibold text-slate-900">Datasets</h1>
+                    </div>
+                    <button onclick="app.logout()" class="px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition-colors duration-200">
+                        Logout
                     </button>
                 </div>
-                <div id="dataset-list" class="flex-grow overflow-y-auto space-y-2 pr-2">
-                    <!-- Datasets will be loaded here -->
+                
+                <div class="space-y-3 mb-6">
+                    <div class="relative">
+                        <label for="file-upload" class="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md inline-flex items-center justify-center transition-colors duration-200">
+                            <i class="fas fa-upload mr-2"></i>
+                            <span>Upload Dataset</span>
+                        </label>
+                        <input id="file-upload" type="file" class="hidden" onchange="app.handleFileUpload(event)">
+                    </div>
+                    
+                    <button onclick="app.showGallery()" id="gallery-button" disabled 
+                        class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 px-4 rounded-md inline-flex items-center justify-center transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-images mr-2"></i>
+                        <span>Chart Gallery</span>
+                    </button>
                 </div>
+                
+                <div id="dataset-list" class="flex-grow overflow-y-auto space-y-2"></div>
             </div>
-
+            
             <!-- Chat Area -->
-            <div class="w-3/4 bg-gray-800 flex flex-col">
-                <!-- Chat Header -->
-                <div id="chat-header" class="p-4 border-b border-gray-700 text-center">
-                    <h2 id="current-dataset-name" class="text-lg font-semibold">Select a dataset to start chatting</h2>
+            <div class="flex-1 bg-slate-50 flex flex-col">
+                <!-- Header -->
+                <div id="chat-header" class="p-4 bg-white border-b border-slate-200">
+                    <h2 id="current-dataset-name" class="text-lg font-medium text-slate-900 text-center">Select a dataset to start chatting</h2>
                 </div>
                 
                 <!-- Chart Area -->
-                <div id="chart-area" class="p-4 border-b border-gray-700 hidden">
+                <div id="chart-area" class="p-6 bg-white border-b border-slate-200 hidden">
                     <canvas id="myChart"></canvas>
-                    <!-- Save to Gallery Form -->
-                    <div id="save-chart-form" class="mt-4 flex items-center space-x-2">
-                        <input id="chart-label-input" type="text" placeholder="Enter a label for this chart..." class="flex-grow px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <button onclick="app.handleSaveChart()" class="px-4 py-2 font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
-                            <i class="fas fa-save mr-2"></i>Save
+                    <div id="save-chart-form" class="mt-4 flex items-center space-x-3">
+                        <input id="chart-label-input" type="text" placeholder="Enter chart label..." 
+                            class="flex-grow px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <button onclick="app.handleSaveChart()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition-colors duration-200">
+                            <i class="fas fa-save mr-1"></i>Save
                         </button>
                     </div>
                 </div>
-
-                <!-- Messages -->
-                <div id="chat-container" class="flex-grow p-4 overflow-y-auto chat-container">
-                     <!-- Messages will be loaded here -->
-                </div>
-                <!-- Input Form -->
-                <div id="chat-form-container" class="p-4 border-t border-gray-700">
-                    <form id="chat-form" onsubmit="app.handleSendMessage(event)" class="flex items-center space-x-4">
-                        <input id="chat-input" type="text" placeholder="Ask a question about your data..." class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" autocomplete="off" disabled>
-                        <button id="send-button" type="submit" class="px-6 py-3 font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed" disabled>
+                
+                <!-- Chat Container -->
+                <div id="chat-container" class="flex-grow p-4 overflow-y-auto chat-container"></div>
+                
+                <!-- Suggestions Area -->
+                <div id="suggestions-area" class="p-4 pt-2 flex flex-wrap gap-2 justify-center bg-white border-t border-slate-200 hidden"></div>
+                
+                <!-- Chat Input -->
+                <div id="chat-form-container" class="p-4 bg-white border-t border-slate-200">
+                    <form id="chat-form" onsubmit="app.handleSendMessage(event)" class="flex items-center space-x-3">
+                        <input id="chat-input" type="text" placeholder="Ask a question about your data..." 
+                            class="flex-1 px-4 py-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                            autocomplete="off" disabled>
+                        <button id="send-button" type="submit" 
+                            class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200 disabled:bg-slate-400 disabled:cursor-not-allowed" 
+                            disabled>
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </form>
@@ -112,10 +213,10 @@
 
         <!-- Gallery Modal -->
         <div id="gallery-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" onclick="app.hideGallery()">
-            <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
-                <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                    <h2 class="text-xl font-bold">Chart Gallery</h2>
-                    <button onclick="app.hideGallery()" class="text-gray-400 hover:text-white">&times;</button>
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+                <div class="p-4 border-b border-slate-200 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-slate-900">Chart Gallery</h2>
+                    <button onclick="app.hideGallery()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
                 </div>
                 <div id="gallery-content" class="p-4 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Saved charts will be rendered here -->
@@ -138,22 +239,35 @@
         // --- CORE METHODS ---
         init() {
             this.state.token = localStorage.getItem('authToken');
+            this.showLandingSection(); // Always start on the landing page
+        },
+        
+        handleGetStartedClick() {
             if (this.state.token) {
                 this.showMainApp();
-                this.fetchDatasets();
+                this.fetchDatasets(); // Fetch data now that we are showing the app
             } else {
                 this.showAuthSection();
             }
         },
 
         // --- UI TOGGLING ---
-        showAuthSection() {
-            document.getElementById('auth-section').classList.remove('hidden');
+        showLandingSection() {
+            document.getElementById('landing-section').classList.remove('hidden');
+            document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('main-app').classList.add('hidden');
         },
+        showAuthSection() {
+            document.getElementById('landing-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            this.showLoginForm(); // Default to login form
+        },
         showMainApp() {
+            document.getElementById('landing-section').classList.add('hidden');
             document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('flex');
         },
         showLoginForm() {
             document.getElementById('login-form').classList.remove('hidden');
@@ -184,13 +298,14 @@
 
                 const data = await response.json();
                 if (!response.ok) {
-                    let errorMessage = data.detail || 'Login failed';
-                    throw new Error(errorMessage);
+                    throw new Error(data.detail || 'Login failed');
                 }
 
                 this.state.token = data.access_token;
                 localStorage.setItem('authToken', this.state.token);
-                this.init();
+                // After successful login, go to the main app
+                this.showMainApp();
+                this.fetchDatasets();
             } catch (error) {
                 errorDiv.textContent = error.message;
                 errorDiv.classList.remove('hidden');
@@ -233,12 +348,14 @@
         },
         logout() {
             this.state.token = null;
+            localStorage.removeItem('authToken');
+            // Reset state
             this.state.datasets = [];
             this.state.currentDatasetId = null;
             this.state.chatHistory = [];
-            localStorage.removeItem('authToken');
-            this.init();
             this.render();
+            // Go back to the landing page
+            this.showLandingSection();
         },
 
         // --- DATASET MANAGEMENT ---
@@ -306,23 +423,19 @@
             }
             
             await this.fetchChatHistory(datasetId);
-        },
 
-        // --- CHAT MANAGEMENT ---
-        async fetchChatHistory(datasetId) {
-            if (!this.state.token) return;
-            try {
-                const response = await fetch(`/api/v1/datasets/${datasetId}/history`, {
-                    headers: { 'Authorization': `Bearer ${this.state.token}` }
-                });
-                this.state.chatHistory = await response.json();
-                this.renderChatHistory();
-            } catch (error) {
-                console.error('Failed to fetch chat history:', error);
+            if (this.state.chatHistory.length === 0) {
+                this.getStarterSuggestions(datasetId);
+            } else {
+                this.clearSuggestions();
             }
         },
+
+        // --- CHAT & SUGGESTIONS ---
         async handleSendMessage(event) {
             event.preventDefault();
+            this.clearSuggestions();
+
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
             if (!message || !this.state.currentDatasetId) return;
@@ -399,6 +512,42 @@
                 this.renderChatHistory();
             }
         },
+        async fetchChatHistory(datasetId) {
+            if (!this.state.token) return;
+            try {
+                const response = await fetch(`/api/v1/datasets/${datasetId}/history`, {
+                    headers: { 'Authorization': `Bearer ${this.state.token}` }
+                });
+                this.state.chatHistory = await response.json();
+                this.renderChatHistory();
+            } catch (error) {
+                console.error('Failed to fetch chat history:', error);
+            }
+        },
+        async getStarterSuggestions(datasetId) {
+            try {
+                const response = await fetch(`/api/v1/datasets/${datasetId}/suggestions`, {
+                    headers: { 'Authorization': `Bearer ${this.state.token}` }
+                });
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                this.renderSuggestions(data.suggestions);
+            } catch (error) {
+                console.error("Could not fetch starter suggestions:", error);
+            }
+        },
+        askSuggestedQuestion(question) {
+            const input = document.getElementById('chat-input');
+            input.value = question;
+            const form = document.getElementById('chat-form');
+            form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        },
+        clearSuggestions() {
+            const container = document.getElementById('suggestions-area');
+            container.innerHTML = '';
+            container.classList.add('hidden');
+        },
 
         // --- GALLERY FUNCTIONS ---
         async handleSaveChart() {
@@ -435,7 +584,7 @@
             if (!this.state.currentDatasetId) return;
             const modal = document.getElementById('gallery-modal');
             const content = document.getElementById('gallery-content');
-            content.innerHTML = '<p class="text-gray-400">Loading gallery...</p>';
+            content.innerHTML = '<p class="text-slate-500">Loading gallery...</p>';
             modal.classList.remove('hidden');
             modal.classList.add('flex');
 
@@ -447,7 +596,7 @@
                 
                 const charts = await response.json();
                 if (charts.length === 0) {
-                    content.innerHTML = '<p class="text-gray-400 col-span-full text-center">No charts saved for this dataset yet.</p>';
+                    content.innerHTML = '<p class="text-slate-500 col-span-full text-center">No charts saved for this dataset yet.</p>';
                     return;
                 }
 
@@ -455,10 +604,10 @@
                 charts.forEach(chart => {
                     const chartData = JSON.parse(chart.chart_data);
                     const item = document.createElement('div');
-                    item.className = 'bg-gray-700 p-2 rounded-lg cursor-pointer hover:bg-gray-600 transition-colors';
+                    item.className = 'bg-white border border-slate-200 p-3 rounded-lg cursor-pointer hover:border-blue-300 transition-colors duration-200';
                     item.innerHTML = `
                         <canvas id="gallery-chart-${chart.id}"></canvas>
-                        <p class="text-center font-semibold mt-2">${chart.label}</p>
+                        <p class="text-center font-medium mt-2 text-slate-900">${chart.label}</p>
                     `;
                     item.onclick = () => {
                         this.hideGallery();
@@ -477,7 +626,7 @@
                 });
 
             } catch (error) {
-                content.innerHTML = `<p class="text-red-400">${error.message}</p>`;
+                content.innerHTML = `<p class="text-red-600">${error.message}</p>`;
             }
         },
         hideGallery() {
@@ -501,16 +650,38 @@
             const listEl = document.getElementById('dataset-list');
             listEl.innerHTML = '';
             if (this.state.datasets.length === 0) {
-                listEl.innerHTML = `<p class="text-gray-500 text-center">No datasets uploaded yet.</p>`;
+                listEl.innerHTML = `<p class="text-slate-500 text-center py-8">No datasets uploaded yet.</p>`;
                 return;
             }
             this.state.datasets.forEach(dataset => {
                 const isSelected = dataset.id === this.state.currentDatasetId;
                 const itemEl = document.createElement('div');
-                itemEl.className = `p-3 rounded-lg cursor-pointer transition-colors ${isSelected ? 'bg-indigo-600' : 'bg-gray-800 hover:bg-gray-700'}`;
-                itemEl.textContent = dataset.original_filename;
+                itemEl.className = `p-3 rounded-md cursor-pointer transition-colors duration-200 ${isSelected ? 'bg-blue-100 border border-blue-300' : 'bg-slate-50 hover:bg-slate-100 border border-slate-200'}`;
+                itemEl.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-file-csv text-blue-600 mr-2"></i>
+                        <span class="text-slate-900 text-sm">${dataset.original_filename}</span>
+                    </div>
+                `;
                 itemEl.onclick = () => this.selectDataset(dataset.id);
                 listEl.appendChild(itemEl);
+            });
+        },
+        renderSuggestions(questions) {
+            const container = document.getElementById('suggestions-area');
+            container.innerHTML = '';
+            if (!questions || questions.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+            
+            container.classList.remove('hidden');
+            questions.forEach(q => {
+                const button = document.createElement('button');
+                button.className = 'text-sm bg-slate-100 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 px-3 py-2 rounded-md border border-slate-200';
+                button.textContent = q;
+                button.onclick = () => this.askSuggestedQuestion(q);
+                container.appendChild(button);
             });
         },
         renderChatHistory() {
@@ -524,10 +695,10 @@
                 bubbleWrapper.className = `max-w-xl`;
 
                 const bubble = document.createElement('div');
-                bubble.className = `p-3 rounded-lg ${msg.is_from_user ? 'bg-indigo-600' : 'bg-gray-700'} ${msg.is_error ? 'bg-red-800' : ''}`;
+                bubble.className = `p-3 rounded-lg ${msg.is_from_user ? 'bg-blue-600 text-white' : 'bg-white border border-slate-200 text-slate-900'} ${msg.is_error ? 'bg-red-100 border-red-300 text-red-800' : ''}`;
                 
                 if (msg.message === '...') {
-                    bubble.innerHTML = `<div class="flex items-center space-x-2"><div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse"></div><div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div><div class="w-2 h-2 bg-gray-300 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div></div>`;
+                    bubble.innerHTML = `<div class="flex items-center space-x-1"><div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div><div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div><div class="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div></div>`;
                 } else {
                     bubble.textContent = msg.message;
                 }
@@ -536,25 +707,25 @@
 
                 if (!msg.is_from_user && msg.sql_query) {
                     const detailsButton = document.createElement('button');
-                    detailsButton.className = 'text-xs text-gray-400 mt-2 hover:text-indigo-300 transition-colors';
-                    detailsButton.innerHTML = '<i class="fas fa-chevron-down mr-2"></i>Show Details';
+                    detailsButton.className = 'text-xs text-slate-500 mt-2 hover:text-blue-600 transition-colors duration-200';
+                    detailsButton.innerHTML = '<i class="fas fa-chevron-down mr-1"></i>Show Details';
                     detailsButton.onclick = () => this.toggleDetails(detailsButton);
                     bubbleWrapper.appendChild(detailsButton);
 
                     const detailsContent = document.createElement('div');
-                    detailsContent.className = 'hidden mt-2 p-2 bg-gray-800 rounded-lg border border-gray-600 text-xs details-content';
+                    detailsContent.className = 'hidden mt-2 p-3 bg-slate-50 rounded-md border border-slate-200 text-xs details-content';
                     
                     let tableHtml = 'No data preview available.';
                     if (msg.data_preview && msg.data_preview.columns && msg.data_preview.data) {
-                        tableHtml = `<table class="w-full text-left"><thead><tr>${msg.data_preview.columns.map(c => `<th class="p-1 border-b border-gray-600">${c}</th>`).join('')}</tr></thead><tbody>`;
-                        tableHtml += msg.data_preview.data.map(row => `<tr>${row.map(cell => `<td class="p-1">${cell === null ? 'NULL' : cell}</td>`).join('')}</tr>`).join('');
-                        tableHtml += '</tbody></table>';
+                        tableHtml = `<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr>${msg.data_preview.columns.map(c => `<th class="p-1 border-b border-slate-300 font-medium">${c}</th>`).join('')}</tr></thead><tbody>`;
+                        tableHtml += msg.data_preview.data.map(row => `<tr>${row.map(cell => `<td class="p-1 border-b border-slate-100">${cell === null ? '<span class="text-slate-400">NULL</span>' : cell}</td>`).join('')}</tr>`).join('');
+                        tableHtml += '</tbody></table></div>';
                     }
 
                     detailsContent.innerHTML = `
-                        <h4 class="font-bold mb-1">Generated SQL Query:</h4>
-                        <pre class="bg-gray-900 p-2 rounded text-white whitespace-pre-wrap"><code>${msg.sql_query}</code></pre>
-                        <h4 class="font-bold mt-3 mb-1">Data Preview:</h4>
+                        <h4 class="font-medium mb-2 text-slate-700">Generated SQL Query:</h4>
+                        <pre class="bg-slate-800 text-slate-100 p-2 rounded text-xs mb-3 overflow-x-auto"><code>${msg.sql_query}</code></pre>
+                        <h4 class="font-medium mb-2 text-slate-700">Data Preview:</h4>
                         ${tableHtml}
                     `;
                     bubbleWrapper.appendChild(detailsContent);
@@ -585,22 +756,22 @@
                         title: {
                             display: true,
                             text: chartData.title,
-                            color: '#E5E7EB',
-                            font: { size: 18 }
+                            color: '#1f2937',
+                            font: { size: 16, weight: 'bold' }
                         },
                         legend: {
-                           labels: { color: '#D1D5DB' }
+                           labels: { color: '#374151' }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { color: '#9CA3AF' },
-                            grid: { color: '#4B5563' }
+                            ticks: { color: '#6b7280' },
+                            grid: { color: '#e5e7eb' }
                         },
                         x: {
-                            ticks: { color: '#9CA3AF' },
-                            grid: { color: '#4B5563' }
+                            ticks: { color: '#6b7280' },
+                            grid: { color: '#e5e7eb' }
                         }
                     }
                 }

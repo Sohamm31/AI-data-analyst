@@ -10,16 +10,12 @@ from sqlalchemy import text
 import json
 
 def get_sql_agent_response(db_uri: str, table_name: str, conversation_prompt: str) -> dict:
-    """
-    Gets a response from the database, handling both text and chart requests.
-    Always returns a dictionary containing the answer, the generated SQL query,
-    and a preview of the data to ensure transparency.
-    """
+   
     sql_query = ""
     result_df = pd.DataFrame()
     
     try:
-        # STEP 1: Initialize LLM
+       
         llm = ChatOpenAI(
             model="openai/gpt-oss-20b:free",
             temperature=0,
@@ -28,7 +24,6 @@ def get_sql_agent_response(db_uri: str, table_name: str, conversation_prompt: st
             default_headers={"HTTP-Referer": "http://localhost:8000", "X-Title": "AI Data Analyst"}
         )
 
-        # STEP 2: Generate and extract SQL query
         db = SQLDatabase.from_uri(db_uri, include_tables=[table_name])
         query_generation_chain = create_sql_query_chain(llm, db)
         
@@ -50,7 +45,9 @@ def get_sql_agent_response(db_uri: str, table_name: str, conversation_prompt: st
             sql_query = raw_response.split("SQLQuery:")[-1].strip()
             if '```' in sql_query:
                 sql_query = sql_query.split('```')[1]
-            sql_query = sql_query.replace('sql', '').replace('`', '').strip()
+
+            sql_query = sql_query.replace('sql', '').replace('`', '').replace('\\', '').strip()
+
             if "SQLResult:" in sql_query:
                  sql_query = sql_query.split("SQLResult:")[0].strip()
         else:
@@ -69,7 +66,6 @@ def get_sql_agent_response(db_uri: str, table_name: str, conversation_prompt: st
     except Exception as e:
         return {"answer": f"Error during query generation: {str(e)}", "sql_query": "", "data_preview": None}
 
-    # STEP 3: Execute query
     try:
         safe_sql_query = sql_query.replace('%', '%%')
         with engine.connect() as connection:
@@ -80,15 +76,12 @@ def get_sql_agent_response(db_uri: str, table_name: str, conversation_prompt: st
         return {"answer": f"An unexpected error occurred while fetching data: {str(e)}", "sql_query": sql_query, "data_preview": None}
 
 
-    # STEP 4: Generate final answer and package the results
     try:
         last_user_question = conversation_prompt.split("Human:")[-1].strip()
         
-        # Create a preview of the dataframe (top 10 rows) for the response
         preview_df = result_df.head(10)
         data_preview_json = json.loads(preview_df.to_json(orient='split')) if not preview_df.empty else None
 
-        # Truncate the full dataframe for the LLM prompt to keep it concise
         result_str = preview_df.to_string()
         if len(result_df) > 10:
             result_str += f"\n\n... (and {len(result_df) - 10} more rows)"
